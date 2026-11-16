@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useGithub } from "../context/github-context.ts";
 import { usePreferences } from "../context/preferences-context.ts";
 import { site } from "../data/site.ts";
@@ -10,10 +11,12 @@ import { cx, t } from "../lib/text.ts";
 import type { Repo } from "../lib/types.ts";
 import { DataNote } from "./DataNote.tsx";
 import { ExternalLink } from "./ExternalLink.tsx";
+import { Tilt } from "./fx.tsx";
 import { IconStar } from "./Icons.tsx";
 import { Section } from "./Section.tsx";
 
 const PAGE = 12;
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export function Projects() {
   const { locale } = usePreferences();
@@ -43,19 +46,20 @@ export function Projects() {
   }, [github.repos]);
 
   return (
-    <Section id="projects" title={t(locale, copy.nav[2].label)}>
+    <Section id="projects" index={t(locale, copy.projectsIndex)} title={t(locale, copy.nav[2].label)}>
       <DataNote />
 
       <div className="mt-12">
-        <h3 className="text-xl font-semibold">{t(locale, copy.featured)}</h3>
-        <p className="mt-2 max-w-2xl text-sm text-muted">{t(locale, copy.featuredNote)}</p>
+        <h3 className="text-2xl font-semibold tracking-[-0.03em]">{t(locale, copy.featured)}</h3>
+        <p className="mt-2 max-w-2xl text-sm text-muted md:text-base">{t(locale, copy.featuredNote)}</p>
         {ready && site.featured.every((item) => !repoByName.has(item.repo.toLowerCase())) ? (
-          <p className="mt-8 border-t border-line py-8 text-sm text-muted">{t(locale, copy.featuredEmpty)}</p>
+          <p className="glass mt-8 rounded-2xl px-4 py-8 text-sm text-muted">{t(locale, copy.featuredEmpty)}</p>
         ) : (
-          <ul className="mt-8 border-t border-line">
-            {site.featured.map((item) => (
+          <ul className="mt-8 grid gap-4 md:grid-cols-2">
+            {site.featured.map((item, index) => (
               <FeaturedCard
                 key={item.repo}
+                index={index}
                 repo={repoByName.get(item.repo.toLowerCase())}
                 summary={t(locale, item.summary)}
                 name={item.repo}
@@ -68,7 +72,7 @@ export function Projects() {
 
       <div className="mt-16">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <h3 className="text-xl font-semibold">{t(locale, copy.allRepos)}</h3>
+          <h3 className="text-2xl font-semibold tracking-[-0.03em]">{t(locale, copy.allRepos)}</h3>
           {ready ? (
             <p className="text-sm text-muted">
               {formatNumber(filtered.length, locale)} {t(locale, copy.showing)}
@@ -76,7 +80,7 @@ export function Projects() {
           ) : null}
         </div>
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div className="glass mt-5 flex flex-col gap-4 rounded-3xl p-4 md:p-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <label className="block w-full lg:max-w-sm">
               <span className="sr-only">{t(locale, copy.searchLabel)}</span>
@@ -90,11 +94,11 @@ export function Projects() {
                   setQuery(event.target.value);
                   setVisible(PAGE);
                 }}
-                className="w-full border-b border-line bg-transparent py-2 text-sm outline-none"
+                className="field"
               />
             </label>
             <div className="flex flex-wrap items-center gap-3">
-              <div role="radiogroup" aria-label={t(locale, copy.sortLabel)} className="flex items-center gap-4">
+              <div role="radiogroup" aria-label={t(locale, copy.sortLabel)} className="flex items-center gap-2">
                 {(
                   [
                     ["recent", copy.sortRecent],
@@ -111,8 +115,8 @@ export function Projects() {
                       setVisible(PAGE);
                     }}
                     className={cx(
-                      "min-h-10 border-b text-sm",
-                      sort === value ? "border-ink font-medium text-ink" : "border-transparent text-muted",
+                      "min-h-10 rounded-full px-3 text-sm",
+                      sort === value ? "bg-ink font-medium text-paper" : "text-muted",
                     )}
                   >
                     {t(locale, label)}
@@ -133,7 +137,7 @@ export function Projects() {
             </div>
           </div>
 
-          <label className="flex items-center gap-3 text-sm">
+          <label className="flex flex-wrap items-center gap-3 text-sm">
             <span className="text-muted">{t(locale, copy.languages)}</span>
             <select
               value={activeLanguage ?? ""}
@@ -141,7 +145,7 @@ export function Projects() {
                 setLanguage(event.target.value || null);
                 setVisible(PAGE);
               }}
-              className="min-h-10 border border-line bg-paper px-3 text-sm"
+              className="field w-auto min-w-40"
             >
               <option value="">{t(locale, copy.allLanguages)}</option>
               {options.map((option) => (
@@ -154,13 +158,13 @@ export function Projects() {
         </div>
 
         {!ready ? (
-          <ul className="mt-6 border-t border-line" aria-hidden="true">
+          <ul className="mt-6 grid gap-3 md:grid-cols-2" aria-hidden="true">
             {Array.from({ length: 6 }, (_, index) => (
-              <li key={index} className="h-14 animate-pulse border-b border-line bg-chip/70" />
+              <li key={index} className="h-28 animate-pulse rounded-2xl bg-chip/70" />
             ))}
           </ul>
         ) : filtered.length === 0 ? (
-          <div className="mt-8 border-t border-line py-10">
+          <div className="glass mt-6 rounded-3xl px-5 py-10">
             <p>{t(locale, copy.noMatch)}</p>
             <button
               type="button"
@@ -177,7 +181,7 @@ export function Projects() {
           </div>
         ) : (
           <>
-            <ul className="mt-4 border-t border-line">
+            <ul className="mt-4 grid gap-3 md:grid-cols-2">
               {filtered.slice(0, visible).map((repo) => (
                 <li key={repo.id}>
                   <RepoCard repo={repo} />
@@ -209,19 +213,19 @@ function FeaturedCard({
   name,
   summary,
   ready,
+  index,
 }: {
   repo: Repo | undefined;
   name: string;
   summary: string;
   ready: boolean;
+  index: number;
 }) {
   const { locale } = usePreferences();
+  const reduced = useReducedMotion() === true;
   if (!ready) {
     return (
-      <li className="border-b border-line py-7" aria-hidden="true">
-        <div className="h-6 w-48 animate-pulse bg-chip" />
-        <div className="mt-3 h-4 max-w-xl animate-pulse bg-chip" />
-      </li>
+      <li className="h-40 animate-pulse rounded-3xl bg-chip" aria-hidden="true" />
     );
   }
   if (!repo) return null;
@@ -230,31 +234,41 @@ function FeaturedCard({
   const language = repo.language;
 
   return (
-    <li className="grid gap-3 border-b border-line py-7 md:grid-cols-[9.5rem_minmax(0,1fr)] md:gap-10 md:py-8">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted md:block md:space-y-1">
-        <p className="inline-flex items-center gap-2 md:flex">
-          <span className="h-2 w-2" style={{ background: languageColor(language ?? null) }} aria-hidden="true" />
-          {language ?? "—"}
-        </p>
-        <p className="inline-flex items-center gap-1 font-mono text-xs">
-          <IconStar className="h-3.5 w-3.5" />
-          {repo ? formatNumber(repo.stars, locale) : "·"}
-        </p>
-        <p className="text-xs">{repo?.pushedAt ? formatDate(repo.pushedAt, locale) : ""}</p>
-      </div>
-      <div>
-        <h4 className="text-2xl font-semibold tracking-[-0.03em] break-words">
+    <motion.li
+      className="h-full"
+      initial={reduced ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+      transition={{ duration: 0.55, delay: Math.min(index, 6) * 0.05, ease }}
+    >
+      <Tilt className="glow-card h-full rounded-3xl p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted">
+          <p className="inline-flex items-center gap-2">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ background: languageColor(language ?? null), boxShadow: `0 0 10px ${languageColor(language ?? null)}` }}
+              aria-hidden="true"
+            />
+            {language ?? "—"}
+          </p>
+          <p className="inline-flex items-center gap-1 font-mono text-xs">
+            <IconStar className="h-3.5 w-3.5" />
+            {formatNumber(repo.stars, locale)}
+          </p>
+        </div>
+        <h4 className="mt-4 text-2xl font-semibold tracking-[-0.04em] break-words">
           {href ? (
             <ExternalLink href={href} className="text-link">
-              {repo?.name ?? name}
+              {repo.name ?? name}
             </ExternalLink>
           ) : (
-            repo?.name ?? name
+            repo.name ?? name
           )}
         </h4>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted md:text-base">{summary}</p>
-      </div>
-    </li>
+        <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">{summary}</p>
+        <p className="mt-4 font-mono text-xs text-muted">{repo.pushedAt ? formatDate(repo.pushedAt, locale) : ""}</p>
+      </Tilt>
+    </motion.li>
   );
 }
 
@@ -264,9 +278,9 @@ function RepoCard({ repo }: { repo: Repo }) {
   const homepage = safeHttpUrl(repo.homepage);
 
   return (
-    <article className="border-b border-line py-4">
+    <article className="glow-card group h-full rounded-2xl p-4 transition duration-300 hover:-translate-y-1">
       <div className="flex items-baseline justify-between gap-4">
-        <h4 className="min-w-0 text-base font-medium break-words">
+        <h4 className="min-w-0 text-base font-semibold break-words">
           {href ? (
             <ExternalLink href={href} className="text-link">
               {repo.name}
@@ -281,9 +295,13 @@ function RepoCard({ repo }: { repo: Repo }) {
           {formatNumber(repo.stars, locale)}
         </span>
       </div>
-      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
         <span className="inline-flex items-center gap-2">
-          <span className="h-2 w-2" style={{ background: languageColor(repo.language) }} aria-hidden="true" />
+          <span
+            className="h-2 w-2 rounded-full"
+            style={{ background: languageColor(repo.language), boxShadow: `0 0 8px ${languageColor(repo.language)}` }}
+            aria-hidden="true"
+          />
           {repo.language ?? t(locale, copy.other)}
         </span>
         <span>{repo.pushedAt ? formatDate(repo.pushedAt, locale) : "—"}</span>
@@ -293,7 +311,7 @@ function RepoCard({ repo }: { repo: Repo }) {
           </ExternalLink>
         ) : null}
       </div>
-      {repo.description ? <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">{repo.description}</p> : null}
+      {repo.description ? <p className="mt-2 text-sm leading-relaxed text-muted">{repo.description}</p> : null}
     </article>
   );
 }

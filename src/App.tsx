@@ -7,6 +7,7 @@ import { Header } from "./components/Header.tsx";
 import { Hero } from "./components/Hero.tsx";
 import { Projects } from "./components/Projects.tsx";
 import { Skills } from "./components/Skills.tsx";
+import { CursorGlow, LocaleWash, ScrollProgress } from "./components/fx.tsx";
 import { GithubProvider } from "./context/github-data.tsx";
 import { PreferencesProvider } from "./context/preferences.tsx";
 import { usePreferences } from "./context/preferences-context.ts";
@@ -24,6 +25,9 @@ function Shell() {
 
   return (
     <>
+      <ScrollProgress />
+      <CursorGlow />
+      <LocaleWash />
       <a className="skip-link" href="#main">
         {t(locale, copy.skip)}
       </a>

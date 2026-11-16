@@ -32,7 +32,11 @@ export function DataNote() {
   return (
     <p
       role="status"
-      className={warn ? "border-l-2 border-ink pl-3 text-sm leading-relaxed" : "text-sm text-muted"}
+      className={
+        warn
+          ? "glass rounded-2xl border-l-2 border-l-accent px-4 py-3 text-sm leading-relaxed"
+          : "glass rounded-2xl px-4 py-3 text-sm leading-relaxed text-muted"
+      }
     >
       {message}
     </p>

@@ -10,12 +10,15 @@ export function Footer() {
   const { locale } = usePreferences();
 
   return (
-    <footer className="border-t border-line py-8">
-      <Container className="flex flex-col gap-2 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-        <p>
-          © {year} {site.name}
-        </p>
-        <p>{t(locale, copy.footer)}</p>
+    <footer className="pb-10">
+      <Container>
+        <div className="section-rule mb-8" aria-hidden="true" />
+        <div className="flex flex-col gap-2 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {site.name}
+          </p>
+          <p>{t(locale, copy.footer)}</p>
+        </div>
       </Container>
     </footer>
   );

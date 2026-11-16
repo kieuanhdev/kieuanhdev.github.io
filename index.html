@@ -9,8 +9,7 @@
       content="Portfolio của Nguyễn Kiều Anh — lập trình viên fullstack. Flutter, Next.js/TypeScript và Spring Boot."
     />
     <meta name="author" content="Nguyễn Kiều Anh" />
-    <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#100f0d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4efe4" />
     <meta property="og:title" content="Nguyễn Kiều Anh · Lập trình viên fullstack" />
     <meta
       property="og:description"
@@ -26,6 +25,8 @@
             theme === "dark" ||
             (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
           if (dark) document.documentElement.classList.add("dark");
+          var themeMeta = document.querySelector('meta[name="theme-color"]');
+          if (themeMeta) themeMeta.setAttribute("content", dark ? "#0c0b0a" : "#f4efe4");
           var locale = localStorage.getItem("locale");
           document.documentElement.lang = locale === "en" ? "en" : "vi";
         } catch (e) {}
