@@ -162,28 +162,22 @@ export const site = {
     {
       id: "email",
       label: "Email",
-      href: "mailto:you@example.com",
-      placeholder: true,
-    },
-    {
-      id: "linkedin",
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/your-profile",
-      placeholder: true,
+      href: "mailto:kieuanh.dev@gmail.com",
+      placeholder: false,
     },
     {
       id: "facebook",
       label: "Facebook",
-      href: "https://facebook.com/your-profile",
-      placeholder: true,
+      href: "https://www.facebook.com/Kieuanh.dev",
+      placeholder: false,
     },
   ] satisfies ContactLink[],
   contactLead: {
-    vi: "Muốn xem mã nguồn hoặc bàn một sản phẩm, GitHub là chỗ đang dùng thật. Email và mạng xã hội bên dưới đang để mẫu, sửa trong file này.",
-    en: "For source code or a product conversation, GitHub is the link that is real today. The email and social rows below are placeholders — edit them in this file.",
+    vi: "Muốn xem mã nguồn hoặc bàn một sản phẩm, GitHub, email và Facebook đều dùng được.",
+    en: "For source code or a product conversation, GitHub, email, and Facebook are the links to use.",
   },
   contactNote: {
-    vi: "Đổi href, rồi đặt placeholder: false khi link đã là của bạn.",
-    en: "Change href, then set placeholder: false once the link is yours.",
+    vi: "Email mở trong ứng dụng thư. Facebook và GitHub mở tab mới.",
+    en: "Email opens in a mail app. Facebook and GitHub open in a new tab.",
   },
 } as const;

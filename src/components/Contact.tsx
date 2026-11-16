@@ -3,8 +3,15 @@ import { site } from "../data/site.ts";
 import { copy } from "../lib/copy.ts";
 import { isSafeHref } from "../lib/format.ts";
 import { t } from "../lib/text.ts";
-import { IconArrow } from "./Icons.tsx";
+import { IconArrow, IconFacebook, IconGitHub, IconMail } from "./Icons.tsx";
 import { Section } from "./Section.tsx";
+
+function ContactIcon({ id }: { id: string }) {
+  if (id === "github") return <IconGitHub className="h-4 w-4" />;
+  if (id === "email") return <IconMail className="h-4 w-4" />;
+  if (id === "facebook") return <IconFacebook className="h-4 w-4" />;
+  return null;
+}
 
 function visibleHref(href: string): string {
   return href.replace(/^mailto:/i, "").replace(/^https?:\/\//i, "").replace(/\/$/, "");
@@ -21,7 +28,8 @@ export function Contact() {
           const body = (
             <>
               <span className="flex items-center justify-between gap-3 text-sm text-muted">
-                <span>
+                <span className="inline-flex items-center gap-2">
+                  <ContactIcon id={contact.id} />
                   {contact.label}
                   {contact.placeholder ? ` · ${t(locale, copy.placeholder).toLowerCase()}` : ""}
                 </span>

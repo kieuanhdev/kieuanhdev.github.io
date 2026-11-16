@@ -60,6 +60,23 @@ export function IconClose(props: IconProps) {
   );
 }
 
+export function IconMail(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...base(props)}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4 7 8 6 8-6" />
+    </svg>
+  );
+}
+
+export function IconFacebook(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...base(props)}>
+      <path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-2c0-.6.4-1 1-1Z" />
+    </svg>
+  );
+}
+
 export function IconGitHub(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...base(props)}>
